@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Droideka",
+  "version": "0.1.0",
+  "description": "Extention for keeping notes",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["src/panel/panel.html", "assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+:root {
+  --qn-width: 320px;
+}
+
+/* Resizable host on the left */
+#qn-host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--qn-width);
+  z-index: 2147483647;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Panel content */
+#qn-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Edge grip (6px) to drag */
+#qn-grip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+}
+#qn-host.dragging #qn-grip {
+  background: rgba(0, 0, 0, 0.05);
+}
+:root.dragging {
+  cursor: col-resize !important;
+}
+
+/* Push page to the right by panel width */
+html,
+body {
+  overflow-x: hidden !important;
+}
+body {
+  margin: 0 !important;
+  padding-left: var(--qn-width) !important;
+}

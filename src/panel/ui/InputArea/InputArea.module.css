@@ -1,0 +1,16 @@
+.box {
+  height: 100%;
+}
+.input {
+  width: 100%;
+  height: 100%; /* fills remaining space under TopBar */
+  padding: 6px; /* tiny padding */
+  border: 1px solid #d1d5db; /* small border */
+  border-radius: 6px;
+  font-size: 14px;
+  resize: none; /* user can’t resize; scroll instead */
+  overflow: auto; /* vertical scroll appears here if needed */
+  overflow-x: hidden; /* no horizontal scroll ever */
+  white-space: pre-wrap; /* wrap long lines */
+  word-break: break-word; /* break long words/urls */
+}

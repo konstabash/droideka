@@ -1,0 +1,15 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+.title {
+  font-size: 14px;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+}

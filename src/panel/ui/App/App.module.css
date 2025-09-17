@@ -1,0 +1,12 @@
+.wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+.body {
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding: 8px;
+}
