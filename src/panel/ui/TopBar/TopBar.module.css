@@ -1,15 +1,33 @@
 .bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-bottom: 1px solid #e5e7eb;
-  font-weight: 600;
+  background: #fff;
 }
-.title {
-  font-size: 14px;
-}
-.actions {
+.tabs {
   display: flex;
   gap: 6px;
+}
+.tab,
+.tabActive,
+.plus {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tabActive {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  font-weight: 600;
+}
+.plus:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.spacer {
+  flex: 1;
 }

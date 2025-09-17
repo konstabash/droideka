@@ -49,3 +49,8 @@ body {
   margin: 0 !important;
   padding-left: var(--qn-width) !important;
 }
+
+html.dragging {
+  cursor: col-resize !important;
+  user-select: none !important;
+}

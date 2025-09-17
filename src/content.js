@@ -21,16 +21,28 @@
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
   let dragging = false;
+  let raf = 0;
+  let lastPointerId = null;
 
   const onPointerMove = (e) => {
     if (!dragging) return;
-    const w = clamp(e.clientX, 240, Math.round(window.innerWidth * 0.7));
-    root.style.setProperty("--qn-width", `${w}px`); // drives host width + body padding
+    if (raf) return; // throttle to next frame
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const w = clamp(e.clientX, 240, Math.round(window.innerWidth * 0.7));
+      root.style.setProperty("--qn-width", `${w}px`);
+    });
   };
 
-  const stop = () => {
+  const stop = (e) => {
     if (!dragging) return;
     dragging = false;
+    if (lastPointerId !== null) {
+      try {
+        grip.releasePointerCapture(lastPointerId);
+      } catch {}
+      lastPointerId = null;
+    }
     host.classList.remove("dragging");
     root.classList.remove("dragging");
     window.removeEventListener("pointermove", onPointerMove);
@@ -40,6 +52,8 @@
 
   grip.addEventListener("pointerdown", (e) => {
     e.preventDefault();
+    lastPointerId = e.pointerId;
+    grip.setPointerCapture(e.pointerId); // keeps events even outside the grip/iframe
     dragging = true;
     host.classList.add("dragging");
     root.classList.add("dragging");
