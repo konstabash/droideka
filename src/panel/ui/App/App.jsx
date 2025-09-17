@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import TopBar from "../TopBar/TopBar.jsx";
+import React, { useEffect, useRef, useState } from "react";
+import TabsBar from "../TabsBar/TabsBar.jsx";
 import InputArea from "../InputArea/InputArea.jsx";
 import s from "./App.module.css";
 
@@ -12,28 +12,31 @@ export default function App() {
   const [active, setActive] = useState(1);
   const [notes, setNotes] = useState({});
   const [value, setValue] = useState("");
+  const [editing, setEditing] = useState(false);
 
-  // Load all once
+  // Load once
   useEffect(() => {
     chrome.storage.local.get([K_COUNT, K_ACTIVE, K_NOTES], (res) => {
       const c = Number(res[K_COUNT]) || 3;
       const a = Number(res[K_ACTIVE]) || 1;
       const n =
         res[K_NOTES] && typeof res[K_NOTES] === "object" ? res[K_NOTES] : {};
-      setCount(Math.min(Math.max(c, 1), 9));
-      setActive(a >= 1 && a <= 9 ? a : 1);
+      const cClamped = Math.min(Math.max(c, 1), 9);
+      const aClamped = a >= 1 && a <= cClamped ? a : 1;
+      setCount(cClamped);
+      setActive(aClamped);
       setNotes(n);
-      setValue(n[a] || "");
+      setValue(n[aClamped] || "");
     });
   }, []);
 
-  // When active tab changes, show its text + persist active
+  // Switch tab → reflect note + persist active
   useEffect(() => {
     setValue(notes[active] || "");
     chrome.storage.local.set({ [K_ACTIVE]: active });
-  }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [active]);
 
-  // Debounced save of notes object
+  // Debounced save for notes
   const saveTimer = useRef(null);
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -44,29 +47,67 @@ export default function App() {
     return () => saveTimer.current && clearTimeout(saveTimer.current);
   }, [notes]);
 
-  // Update notes for current tab when input changes
+  // Input change for current tab
   const handleChange = (next) => {
     setValue(next);
     setNotes((prev) => ({ ...prev, [active]: next }));
   };
 
-  // Add a tab (max 9), select it, persist count
   const handleAdd = () => {
     if (count >= 9) return;
     const nextCount = count + 1;
+    const nextNotes = { ...notes, [nextCount]: "" };
+
     setCount(nextCount);
-    chrome.storage.local.set({ [K_COUNT]: nextCount });
+    setNotes(nextNotes);
     setActive(nextCount);
-    // init empty text for new tab
-    setNotes((prev) => ({ ...prev, [nextCount]: "" }));
+    setValue("");
+
+    chrome.storage.local.set({
+      [K_COUNT]: nextCount,
+      [K_ACTIVE]: nextCount,
+      [K_NOTES]: nextNotes,
+    });
+  };
+
+  // Delete specific tab n (edit mode behavior)
+  const handleDelete = (n) => {
+    if (count <= 1) return; // keep at least one
+
+    // Reindex notes: pack down skipping n
+    const newNotes = {};
+    for (let i = 1, j = 1; i <= count; i++) {
+      if (i === n) continue;
+      newNotes[j] = notes[i] || "";
+      j++;
+    }
+
+    const newCount = count - 1;
+    let newActive = active;
+    if (active === n) newActive = Math.min(n, newCount);
+    else if (active > n) newActive = active - 1;
+
+    setNotes(newNotes);
+    setCount(newCount);
+    setActive(newActive);
+    setValue(newNotes[newActive] || "");
+
+    chrome.storage.local.set({
+      [K_NOTES]: newNotes,
+      [K_COUNT]: newCount,
+      [K_ACTIVE]: newActive,
+    });
   };
 
   return (
     <div className={s.wrap}>
-      <TopBar
+      <TabsBar
         count={count}
         active={active}
+        editing={editing}
+        onToggleEdit={() => setEditing((v) => !v)}
         onSelect={setActive}
+        onDelete={handleDelete}
         onAdd={handleAdd}
       />
       <div className={s.body}>

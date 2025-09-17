@@ -1,0 +1,112 @@
+.bar {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+}
+.spacer {
+  flex: 1;
+}
+
+.tab {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-grid; /* centers overlays (num/cross) */
+  place-items: center; /* center both spans */
+  min-width: 28px; /* stable width so no jump */
+  height: 24px;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.tabActive {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  font-weight: 600;
+}
+
+/* Wiggle clearly visible in edit mode */
+.editing .tab {
+  animation: wiggle 700ms ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-4deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editing .tab {
+    animation: none;
+  }
+}
+
+/* Swap number → cross on hover in edit mode, without layout shift */
+.num,
+.cross {
+  grid-area: 1 / 1;
+}
+.num {
+  opacity: 1;
+  transition: opacity 120ms ease;
+}
+.cross {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.editing .tab:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+.editing .tab:hover .num {
+  opacity: 0;
+}
+.editing .tab:hover .cross {
+  opacity: 1;
+}
+
+.plus {
+  border: 1px dashed #cbd5e1;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 28px;
+  height: 24px;
+}
+.plus:hover {
+  background: #e2e8f0;
+}
+
+.editBtn {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabs,
+.tab,
+.editBtn {
+  user-select: none;
+}
